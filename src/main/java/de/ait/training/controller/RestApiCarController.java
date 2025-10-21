@@ -112,5 +112,61 @@ public class RestApiCarController {
         log.info("Delete car with id {}", id);
         cars.removeIf(car -> car.getId() == id);
     }
+/*
+    @Operation(
+            summary = "Filtered cars by color",
+            description = "Returns a list of cars filtered by color",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "found"),
+                   // @ApiResponse(responseCode = "404", description = "not found")
+            }
+    )
+
+    /**
+     * GET /api/cars/color/{color}
+     * Возвращает список всех автомобилей заданного цвета
+     */
+/*
+    @GetMapping("/color/{color}")
+    ResponseEntity<List<Car>> getCarsByColor(@PathVariable String color) {
+        List<Car> cars = new ArrayList<>();
+        for (Car carInList : cars) {
+            if (carInList.getColor().equalsIgnoreCase(color)) {
+                cars.add(carInList);
+            }
+        }
+
+        if (cars.isEmpty()) {
+            log.warn("Cars list is empty");
+            return new ResponseEntity<>(List.of(),HttpStatus.NOT_FOUND);
+        }else  {
+            log.info("Cars list found");
+            return new ResponseEntity<>(cars, HttpStatus.OK);
+        }
+    }
+*/
+
+    @Operation(summary = "Get cars by color", description = "Returns a list of cars filtered by color", responses = @ApiResponse(responseCode = "200", description = "Found cars with color"))
+    @GetMapping("/color/{color}")
+    public ResponseEntity<List<Car>> getCarsByColor(@PathVariable String color) {
+        List<Car> filteredCars = new ArrayList<>();
+
+        for (Car car : cars) {
+            if (car.getColor().equalsIgnoreCase(color)) {
+                filteredCars.add(car);
+            }
+        }
+
+
+        if (filteredCars.isEmpty()) {
+            log.warn("No cars found for color: {}", color);
+            return new ResponseEntity<>(filteredCars, HttpStatus.NOT_FOUND);
+        } else {
+
+            log.info("Found {} cars with color: {}", filteredCars.size(), color);
+            return new ResponseEntity<>(filteredCars, HttpStatus.OK);
+        }
+
+    }
 
 }
