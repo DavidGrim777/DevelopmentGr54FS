@@ -1,6 +1,7 @@
 package de.ait.training.controller;
 
 import de.ait.training.model.Car;
+import de.ait.training.repository.CarRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +27,9 @@ import java.util.List;
 
 public class RestApiCarController {
 
-    Car carOne = new Car(1, "black", "BMW x5", 25000);
+    private CarRepository carRepository;
+
+ /*   Car carOne = new Car(1, "black", "BMW x5", 25000);
     Car carTwo = new Car(2, "green", "Audi A4", 15000);
     Car carThree = new Car(3, "white", "MB A220", 18000);
     Car carFour = new Car(4, "red", "Ferrari", 250000);
@@ -38,6 +41,10 @@ public class RestApiCarController {
         cars.add(carTwo);
         cars.add(carThree);
         cars.add(carFour);
+    }*/
+
+    public RestApiCarController(CarRepository carRepository) {
+        this.carRepository = carRepository;
     }
 
 
@@ -49,7 +56,7 @@ public class RestApiCarController {
 
     @GetMapping()
     Iterable<Car> getCars() {
-        return cars;
+        return carRepository.findAll();
     }
 
     /**
@@ -58,21 +65,15 @@ public class RestApiCarController {
      * @param car
      * @return созданный автомобиль
      */
-    @Operation(
-            summary = "Create car",
-            description = "Create a new car",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Created")
-            }
-    )
+    @Operation(summary = "Create car", description = "Create a new car", responses = {@ApiResponse(responseCode = "200", description = "Created")})
     @PostMapping()
     Car postCar(@RequestBody Car car) {
         if (car.getId() <= 0) {
             log.error("Car ID must be greater than zero");
-            Car errorCar = new Car(9999, "000", "000", 9999);
+            Car errorCar = new Car("000", "000", 9999);
             return errorCar;
         }
-        cars.add(car);
+        carRepository.save(car);
         log.info("Car posted successfully");
         return car;
     }
@@ -87,17 +88,26 @@ public class RestApiCarController {
 
     @PutMapping("/{id}")
     ResponseEntity<Car> putCar(@PathVariable long id, @RequestBody Car car) {
-        int carIndex = -1;
-        for (Car carInList : cars) {
+
+        Car foundCar = carRepository.findById(id).orElse(null);
+
+    /*    for (Car carInList : cars) {
             if (carInList.getId() == id) {
                 carIndex = cars.indexOf(carInList);
                 cars.set(carIndex, car);
                 log.info("Car id " + carInList.getId() + " has been updated");
             }
+        }        */
+
+        if (foundCar == null) {
+            log.info("Car not found");
+
+        } else {
+            log.info("Car {} was found", id);
         }
-        return (carIndex == -1)
-                ? new ResponseEntity<>(postCar(car), HttpStatus.CREATED)
-                : new ResponseEntity<>(car, HttpStatus.OK);
+        carRepository.save(car);
+
+        return (foundCar == null) ? new ResponseEntity<>(postCar(car), HttpStatus.CREATED) : new ResponseEntity<>(car, HttpStatus.OK);
 
     }
 
@@ -110,7 +120,7 @@ public class RestApiCarController {
     @DeleteMapping("/{id}")
     void deleteCar(@PathVariable long id) {
         log.info("Delete car with id {}", id);
-        cars.removeIf(car -> car.getId() == id);
+        carRepository.deleteById(id);
     }
 /*
     @Operation(
@@ -149,13 +159,8 @@ public class RestApiCarController {
     @Operation(summary = "Get cars by color", description = "Returns a list of cars filtered by color", responses = @ApiResponse(responseCode = "200", description = "Found cars with color"))
     @GetMapping("/color/{color}")
     public ResponseEntity<List<Car>> getCarsByColor(@PathVariable String color) {
-        List<Car> filteredCars = new ArrayList<>();
+        List<Car> filteredCars = carRepository.findCarByColorIgnoreCase(color);
 
-        for (Car car : cars) {
-            if (car.getColor().equalsIgnoreCase(color)) {
-                filteredCars.add(car);
-            }
-        }
 
 
         if (filteredCars.isEmpty()) {

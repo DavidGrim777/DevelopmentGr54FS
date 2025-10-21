@@ -1,19 +1,38 @@
 package de.ait.training.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Data
+
 @NoArgsConstructor
+@Entity
+@Table(name = "cars")
 public class Car {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(nullable = false)
     private String color;
+
+    @Column(nullable = false)
     private String model;
+
+    @Column(nullable = false)
     private double price;
+
+    public Car(String color, String model, double price) {
+        this.color = color;
+        this.model = model;
+        this.price = price;
+    }
 }
