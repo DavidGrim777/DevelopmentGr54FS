@@ -162,7 +162,6 @@ public class RestApiCarController {
         List<Car> filteredCars = carRepository.findCarByColorIgnoreCase(color);
 
 
-
         if (filteredCars.isEmpty()) {
             log.warn("No cars found for color: {}", color);
             return new ResponseEntity<>(filteredCars, HttpStatus.NOT_FOUND);
@@ -174,4 +173,40 @@ public class RestApiCarController {
 
     }
 
+    @GetMapping("/price/between/{min}/{max}")
+    public ResponseEntity<List<Car>> getCarsByPriceBetween(@PathVariable Double min, @PathVariable Double max) {
+        if(max < min) {
+            log.error("Maximum price must be greater than min");
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        }
+        List<Car> filteredCars =carRepository.findByPriceBetween(min, max);
+        if (filteredCars.isEmpty()) {
+            log.info("No cars found for price between {} and {}", min, max);
+            return new ResponseEntity<>(filteredCars, HttpStatus.NOT_FOUND);
+        }
+        log.info("Found {} cars with price between {} and {}", filteredCars.size(), min, max);
+        return new ResponseEntity<>(filteredCars, HttpStatus.OK);
+    }
+
+    @GetMapping("/price/unter/{max}")
+    public ResponseEntity<List<Car>> getCarsByPriceLessThanEqual(@PathVariable Double max) {
+        List<Car> filteredCars =carRepository.findByPriceLessThanEqual(max);
+        if (filteredCars.isEmpty()) {
+            log.info("No cars found for price less than {}", max);
+            return new ResponseEntity<>(filteredCars, HttpStatus.NOT_FOUND);
+        }
+        log.info("Found {} cars with price less than {}", filteredCars.size(), max);
+        return new ResponseEntity<>(filteredCars, HttpStatus.OK);
+    }
+
+    @GetMapping("/price/over/{min}")
+    public ResponseEntity<List<Car>> getCarsByPriceGreaterThanEqual(@PathVariable Double min) {
+        List<Car> filteredCars =carRepository.findByPriceGreaterThanEqual(min);
+        if (filteredCars.isEmpty()) {
+            log.info("No cars found for price greater than {}", min);
+            return new ResponseEntity<>(filteredCars, HttpStatus.NOT_FOUND);
+        }
+        log.info("Found {}  cars with price greater than {}", filteredCars.size(), min);
+        return new ResponseEntity<>(filteredCars, HttpStatus.OK);
+    }
 }
