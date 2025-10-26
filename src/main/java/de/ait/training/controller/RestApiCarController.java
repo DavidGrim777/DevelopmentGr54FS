@@ -27,7 +27,7 @@ import java.util.List;
 
 public class RestApiCarController {
 
-    private CarRepository carRepository;
+    private final CarRepository carRepository;
 
  /*   Car carOne = new Car(1, "black", "BMW x5", 25000);
     Car carTwo = new Car(2, "green", "Audi A4", 15000);
@@ -104,10 +104,13 @@ public class RestApiCarController {
 
         } else {
             log.info("Car {} was found", id);
+            carRepository.save(car);
         }
-        carRepository.save(car);
 
-        return (foundCar == null) ? new ResponseEntity<>(postCar(car), HttpStatus.CREATED) : new ResponseEntity<>(car, HttpStatus.OK);
+
+        return (foundCar == null)
+                ? new ResponseEntity<>(postCar(car), HttpStatus.CREATED)
+                : new ResponseEntity<>(car, HttpStatus.OK);
 
     }
 
@@ -172,14 +175,15 @@ public class RestApiCarController {
         }
 
     }
+                           // HOMEWORK LESSON 05
 
     @GetMapping("/price/between/{min}/{max}")
     public ResponseEntity<List<Car>> getCarsByPriceBetween(@PathVariable Double min, @PathVariable Double max) {
-        if(max < min) {
+        if (max < min) {
             log.error("Maximum price must be greater than min");
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
         }
-        List<Car> filteredCars =carRepository.findByPriceBetween(min, max);
+        List<Car> filteredCars = carRepository.findCarByPriceBetween(min, max);
         if (filteredCars.isEmpty()) {
             log.info("No cars found for price between {} and {}", min, max);
             return new ResponseEntity<>(filteredCars, HttpStatus.NOT_FOUND);
@@ -190,7 +194,7 @@ public class RestApiCarController {
 
     @GetMapping("/price/unter/{max}")
     public ResponseEntity<List<Car>> getCarsByPriceLessThanEqual(@PathVariable Double max) {
-        List<Car> filteredCars =carRepository.findByPriceLessThanEqual(max);
+        List<Car> filteredCars = carRepository.findCarByPriceLessThanEqual(max);
         if (filteredCars.isEmpty()) {
             log.info("No cars found for price less than {}", max);
             return new ResponseEntity<>(filteredCars, HttpStatus.NOT_FOUND);
@@ -201,7 +205,7 @@ public class RestApiCarController {
 
     @GetMapping("/price/over/{min}")
     public ResponseEntity<List<Car>> getCarsByPriceGreaterThanEqual(@PathVariable Double min) {
-        List<Car> filteredCars =carRepository.findByPriceGreaterThanEqual(min);
+        List<Car> filteredCars = carRepository.findCarByPriceGreaterThanEqual(min);
         if (filteredCars.isEmpty()) {
             log.info("No cars found for price greater than {}", min);
             return new ResponseEntity<>(filteredCars, HttpStatus.NOT_FOUND);
