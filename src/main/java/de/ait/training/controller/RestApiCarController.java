@@ -192,7 +192,7 @@ public class RestApiCarController {
         return new ResponseEntity<>(filteredCars, HttpStatus.OK);
     }
 
-    @GetMapping("/price/unter/{max}")
+    @GetMapping("/price/under/{max}")
     public ResponseEntity<List<Car>> getCarsByPriceLessThanEqual(@PathVariable Double max) {
         List<Car> filteredCars = carRepository.findCarByPriceLessThanEqual(max);
         if (filteredCars.isEmpty()) {
