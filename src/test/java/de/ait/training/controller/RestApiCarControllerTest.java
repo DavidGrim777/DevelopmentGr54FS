@@ -50,12 +50,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @DisplayName("price unter then 16000, 1 car found, status OK")
+    @DisplayName("price under then 16000, 1 car found, status OK")
     void testFindCarLessThanEqualSuccess() throws Exception {
         given(carRepository.findCarByPriceLessThanEqual(16000.0))
                 .willReturn(List.of(new Car("green","Audi A4", 15000)));
 
-        mockMvc.perform(get("/api/cars/price/unter/{max}", 16000))
+        mockMvc.perform(get("/api/cars/price/under/{max}", 16000))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[?(@.model == 'Audi A4')]").exists());
