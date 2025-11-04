@@ -14,7 +14,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -35,7 +34,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("price between 10000 and 30000, 3 cars were found, status OK")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testPriceBetween10000And30000() throws Exception {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/price/between/10000/30000"), Car[].class);
         //assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
@@ -48,7 +47,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("price under 16000, 1 car was found, status OK")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testPriceUnder16000Success() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/price/under/16000"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -73,7 +72,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("returns a list of all cars from the database, 4 cars in database, status OK")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testReturnsAllCarsFromDatabase() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -85,7 +84,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("returns a empty list from the database, 0 cars ware found, status OK")
-    @Sql(scripts = {"classpath:sql/clear.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt"})
     void testReturnsEmptyListWhenNoCarsFromDatabase() throws Exception {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -97,7 +96,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("returns filtered cars by red color, case insensitive, 1 car was found, status OK ")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testReturnsFiltersCarsByRedColor() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/color/red"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -109,7 +108,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("returns a empty list from the database, 0 cars ware found by purple color, status NOT_FOUND")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testReturnsEmptyListWhenColorNotFound() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/color/purple"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -121,7 +120,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("returns all cars where the price is between 10,000 and 30,000, 3 cars was found, status OK ")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testReturnsCarsWhenPriceIsInGivenRange() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/price/between/10000/30000"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -132,7 +131,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("returns a empty list from the database, no cars between 100/500, status NOT_FOUND")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testReturnsEmptyListWhenNoCarsInRange() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/price/between/100/500"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -151,7 +150,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("returns cars including prices equal to min and max, 3 cars found, status OK")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testPriceBetweenBoundaryIncluded() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/price/between/15000/25000"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -163,7 +162,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("returns cars with price less or equal to 25000, 3 cars found, status OK")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testPriceUnderSuccess() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/price/under/25000"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -173,7 +172,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("returns empty list when no cars under price, status NOT_FOUND")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void testPriceUnderNoCars() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/price/under/1000"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -185,7 +184,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("price over 20000, 2 cars found, status OK")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void shouldReturnCarsOverMinPrice() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/price/over/20000"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -196,7 +195,7 @@ public class RestApiCarControllerIT {
 
     @Test
     @DisplayName("price over 1000000, no cars found, status NotFound")
-    @Sql(scripts = {"classpath:sql/clear.sql", "classpath:sql/seed_cars.sql"})
+    @Sql(scripts = {"classpath:sql/clear.sql.txt", "classpath:sql/seed_cars.sql.txt"})
     void shouldReturn404WhenNoCarsOverPrice() {
         ResponseEntity<Car[]> response = restTemplate.getForEntity(url("/api/cars/price/over/1000000"), Car[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
