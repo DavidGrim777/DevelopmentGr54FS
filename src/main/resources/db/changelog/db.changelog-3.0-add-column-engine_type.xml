@@ -9,7 +9,7 @@
     <!-- Каждый changeSet — это одно логическое изменение базы данных -->
     <!-- id должен быть уникальным числом (в рамках проекта) -->
     <!-- author — твоё имя или ник -->
-    <changeSet id="3" author="david">
+    <changeSet id="3-add-colum_year" author="david">
 
         <!-- Эта команда добавляет в таблицу cars новый столбец engine_type -->
         <addColumn tableName="cars">
